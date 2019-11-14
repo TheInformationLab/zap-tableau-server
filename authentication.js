@@ -26,11 +26,10 @@ const getCredentials = (z, bundle) => new Promise((resolve, reject) => {
 		z.console.log('[getCredentials - serverInfo] body:', body);
 		if (body && JSON.parse(body) && JSON.parse(body).serverInfo) {
 			const apiVersion = JSON.parse(body).serverInfo.restApiVersion;
-			bundle.authData.apiVersion = apiVersion;
 			z.console.log('[getCredentials] apiVersion', apiVersion);
 			const settings = {
 				method: 'POST',
-				url: bundle.authData.serverUrl + "/api/"+bundle.authData.apiVersion+"/auth/signin",
+				url: bundle.authData.serverUrl + "/api/"+apiVersion+"/auth/signin",
 				headers: {"User-Agent":"Zapier","Content-Type":"application/json","Accept":"application/json"}
 			}
 			if (bundle.authData.username && bundle.authData.username.length > 0) {
@@ -46,7 +45,8 @@ const getCredentials = (z, bundle) => new Promise((resolve, reject) => {
 			      reject('The access token or username/password you have supplied is invalid');
 			    }
 			    resolve({
-			      creds: response.json.credentials
+			      creds: response.json.credentials,
+						apiVersion: apiVersion
 			    })
 				})
 				.catch(reject);
@@ -66,12 +66,6 @@ const getSessionKey = (z, bundle) => {
 	    return response;
   	})
 		.catch(error => {throw new Error('Authentication error', error)});
-};
-
-const credentialFields = (z, bundle) => {
-  const response = z.request('https://example.com/api/v2/fields.json');
-  // json is is [{"key":"field_1"},{"key":"field_2"}]
-  return response.then(res => res.json);
 };
 
 module.exports = {
@@ -125,6 +119,6 @@ module.exports = {
     perform: getSessionKey
   },
   connectionLabel: (z, bundle) => {
-    return `Tableau Server ${bundle.inputData.serverUrl} [${bundle.inputData.site}]`;
+    return `Tableau Server`;
   }
 };
