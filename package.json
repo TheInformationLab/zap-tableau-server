@@ -1,0 +1,25 @@
+{
+  "name": "tableauserver",
+  "version": "1.1.0",
+  "description": "Zapier connector for Tableau Server",
+  "repository": "theinformationlab/zap-tableauserver",
+  "homepage": "https://www.theinformationlab.co.uk/labs",
+  "author": "Craig Bloodworth <craig.bloodworth@theinformationlab.co.uk>",
+  "license": "BSD-3-Clause",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive"
+  },
+  "engines": {
+    "node": "8.10.0",
+    "npm": ">=5.6.0"
+  },
+  "dependencies": {
+    "request": "^2.88.0",
+    "zapier-platform-core": "8.4.2"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.2",
+    "should": "^13.2.3"
+  }
+}
