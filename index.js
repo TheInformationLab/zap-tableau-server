@@ -1,8 +1,8 @@
-const WorkbookpreviewimageSearch = require('./searches/workbook_preview_image');
+const WorkbookResource = require('./resources/workbook');
+const WebhookworkbookTrigger = require('./triggers/webhook_workbook');
 const WorkbookSearch = require('./searches/workbook');
 const ProjectResource = require('./resources/project');
 const PublishworkbookCreate = require('./creates/publish_workbook');
-const WorkbookTrigger = require('./triggers/workbook');
 const authentication = require('./authentication');
 const createNewUser = require('./creates/newuser');
 const updateUser = require('./creates/updateuser');
@@ -50,17 +50,17 @@ const App = {
 
   // If you want to define optional resources to simplify creation of triggers, searches, creates - do that here!
   resources: {
+    [WorkbookResource.key]: WorkbookResource,
     [ProjectResource.key]: ProjectResource,
   },
 
   // If you want your trigger to show up, you better include it here!
   triggers: {
-    [WorkbookTrigger.key]: WorkbookTrigger,
-  },
+		[WebhookworkbookTrigger.key]: WebhookworkbookTrigger
+	},
 
   // If you want your searches to show up, you better include it here!
   searches: {
-    //[WorkbookpreviewimageSearch.key]: WorkbookpreviewimageSearch,
     [WorkbookSearch.key]: WorkbookSearch,
     [searchUsers.key]: searchUsers
   },
