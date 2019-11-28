@@ -62,7 +62,7 @@ module.exports = {
   list: {
     display: {
       label: 'New Project',
-      description: 'Lists the projects.'
+      description: 'Triggers when a new project is created.'
     },
     operation: {
       canPaginate: true,
