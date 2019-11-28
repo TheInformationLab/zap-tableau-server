@@ -5,7 +5,8 @@ module.exports = {
   noun: 'User',
   display: {
     label: 'Update User',
-    description: 'Update the details and credentials of a user.'
+    description: 'Update the details and credentials of a user.',
+		important: true
   },
 
   operation: {

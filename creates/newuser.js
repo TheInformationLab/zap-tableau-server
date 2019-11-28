@@ -5,9 +5,9 @@ module.exports = {
   noun: 'User',
   display: {
     label: 'Add User',
-    description: 'Add a new Tableau Server User.'
+    description: 'Add a new Tableau Server User.',
+		important: true
   },
-
   operation: {
     inputFields: [
       {key: 'username', required: true, type: 'string'},
