@@ -1,14 +1,28 @@
+const hydrators = require('../hydrators');
+
 const searchWorkbook = (z, bundle) => {
-  const responsePromise = z.request({
-    url: bundle.authData.serverUrl + "/api/"+bundle.authData.apiVersion + "/sites/" + bundle.authData.creds.site.id + "/workbooks/" + bundle.inputData.luid,
-  });
-  return responsePromise
-    .then(response => [response.json.workbook])
-		.then(workbookArr => z.stashFile(z.request({url: bundle.authData.serverUrl + "/api/"+bundle.authData.apiVersion + "/sites/" + bundle.authData.creds.site.id + "/workbooks/" + bundle.inputData.luid + "/previewImage", raw: true})))
-		.then(url => {
-			workbookArr[0].previewImage = url;
-			return workbookArr;
-		});
+	return z.request({
+      url: `${bundle.authData.serverUrl}/api/${bundle.authData.apiVersion}/sites/${bundle.authData.creds.site.id}/workbooks/${bundle.inputData.luid}`
+    })
+    .then((response) => {
+			const workbooks = [z.JSON.parse(response.content).workbook];
+      return workbooks.map((workbook) => {
+        workbook.file = z.dehydrateFile(hydrators.downloadWorkbook, {
+          workbookId: workbook.id,
+          filename: workbook.contentUrl
+        });
+				workbook.previewImage = z.dehydrateFile(hydrators.downloadWorkbookPreviewImage, {
+          workbookId: workbook.id,
+          filename: workbook.contentUrl
+        });
+				workbook.defaultViewImage = z.dehydrateFile(hydrators.downloadViewImage, {
+	        viewId: workbook.id,
+					resolution: 'high',
+	        filename: workbook.contentUrl
+	      });
+        return workbook;
+      });
+    });
 };
 
 module.exports = {
@@ -16,13 +30,13 @@ module.exports = {
   noun: 'Workbook',
 
   display: {
-    label: 'Find a Workbook',
-    description: 'Finds a workbook.'
+    label: 'Get a Workbook',
+    description: 'Returns a workbook based on its ID.'
   },
 
   operation: {
     inputFields: [
-      {key: 'luid', required: true, helpText: 'Find the Workbook with this luid.'}
+      {key: 'luid', required: true, helpText: 'Get a specific workbook.', dynamic: 'workbookList.id.name'}
     ],
     perform: searchWorkbook,
 
@@ -75,7 +89,9 @@ module.exports = {
 	      updatedAt: "2019-09-30T08:54:41Z",
 	      encryptExtracts: "false",
 	      defaultViewId: "dd733ee0-ebbb-4d83-a669-f94b13101fe3",
-				previewImage: 'https://zapier-dev-files.s3.amazonaws.com/cli-platform/f75e2819-05e2-41d0-b70e-9f8272f9eebf'
+				file: 'Workbook.twbx',
+				previewImage: 'Preview Image.png',
+				defaultViewImage: 'Default View Image.png'
 		},
 
 	  outputFields: [
@@ -101,8 +117,9 @@ module.exports = {
 	    {key: 'createdAt', label: 'Workbook Created At'},
 	    {key: 'updatedAt', label: 'Workbook Updated At'},
 	    {key: 'encryptExtracts', label: 'Workbook Encrypted Extracts'},
-	    {key: 'defaultViewId', label: 'Workbook Default View ID'},
-			{key: 'previewImage', label: 'Workbook Preview Image'}
+			{key: 'file', type: 'file', label: 'twbx' },
+			{key: 'previewImage', type: 'file', label: 'Preview Image' },
+			{key: 'defaultViewImage', type: 'file', label: 'Default View Image' }
 	  ]
   }
 };
